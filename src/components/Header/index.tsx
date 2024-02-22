@@ -10,7 +10,7 @@ import Link from 'next/link'
 const Header = () => {
   return (
     <header className="bg-slate-900 w-full py-4 text-white">
-      <div className="container">
+      <div className="container px-3 md:px-6">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>

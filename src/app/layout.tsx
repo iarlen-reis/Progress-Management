@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={cn('font-roboto', roboto.variable, fredoka.variable)}>
         <Header />
-        <main className="container pb-12">{children}</main>
+        <main className="container px-3 md:px-6 pb-12">{children}</main>
         <Toaster />
       </body>
     </html>

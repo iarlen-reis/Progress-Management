@@ -21,8 +21,12 @@ export default async function Home() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1 mt-4">
-        <h1 className="text-3xl font-fredoka font-medium">Progressos</h1>
-        <p className="text-lg">Aqui estão todos seus progressos!</p>
+        <h1 className="text-2xl font-fredoka font-medium md:text-3xl">
+          Progressos
+        </h1>
+        <p className="text-base md:text-lg">
+          Aqui estão todos seus progressos!
+        </p>
       </div>
       <MenuTools.Root>
         <MenuTools.Link href="/task/create" text="Criar tarefa" />

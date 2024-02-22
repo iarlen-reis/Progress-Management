@@ -33,8 +33,8 @@ export default async function EditTaskPage({ params }: ParamProps) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col mt-4">
-        <h1 className="text-3xl font-fredoka font-medium">
-          Editar tarefa {task.name}
+        <h1 className="text-2xl font-fredoka font-medium md:text-3xl line-clamp-1">
+          Editar {task.name}
         </h1>
       </div>
 

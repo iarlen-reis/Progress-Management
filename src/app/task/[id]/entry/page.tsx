@@ -16,8 +16,12 @@ export default async function Entry({ params }: ParamProps) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1 mt-4">
-        <h1 className="text-3xl font-fredoka font-medium">Criar entrada</h1>
-        <p className="text-lg">Adicione uma entrada a sua tarefa</p>
+        <h1 className="text-2xl font-fredoka font-medium md:text-3xl">
+          Criar entrada
+        </h1>
+        <p className="text-base md:text-lg">
+          Adicione uma entrada a sua tarefa
+        </p>
       </div>
 
       <form className="flex flex-col gap-6" action={createEntry}>
@@ -34,7 +38,7 @@ export default async function Entry({ params }: ParamProps) {
           </Label>
           <Input placeholder="Nome da entrada" name="name" id="name" required />
         </FieldSet>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-4">
           <FieldSet>
             <Label htmlFor="date">
               Realizada em <IsRequired />

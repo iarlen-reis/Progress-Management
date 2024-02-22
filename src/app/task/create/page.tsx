@@ -10,7 +10,9 @@ export default async function CreateTaskPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col mt-4">
-        <h1 className="text-3xl font-fredoka font-medium">Criar tarefa</h1>
+        <h1 className="text-2xl font-fredoka font-medium md:text-3xl">
+          Criar tarefa
+        </h1>
       </div>
 
       <form className="flex flex-col gap-6" action={createTask}>
@@ -32,7 +34,7 @@ export default async function CreateTaskPage() {
             type="date"
           />
         </FieldSet>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-4">
           <FieldSet>
             <Label htmlFor="progress">
               Progresso atual <IsRequired />

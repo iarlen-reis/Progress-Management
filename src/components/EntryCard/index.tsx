@@ -34,19 +34,21 @@ const EntryCard = ({
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex flex-col">
-        <CardTitle className="text-2xl font-fredoka font-medium">
+        <CardTitle className="text-xl font-fredoka font-medium line-clamp-1 md:text-2xl">
           {name}
         </CardTitle>
-        <CardDescription className="text-sm font-fredoka">
+        <CardDescription className="text-sm font-fredoka md:text-base">
           {convertedDate}
         </CardDescription>
-        <CardDescription className="text-sm font-fredoka">
+        <CardDescription className="text-sm font-fredoka md:text-base">
           Adicionado: {increment}
         </CardDescription>
       </CardHeader>
       {description && (
         <CardContent>
-          <p className="text-lg font-fredoka">{description}</p>
+          <p className="text-base font-fredoka md:text-lg line-clamp-3">
+            {description}
+          </p>
         </CardContent>
       )}
       <CardFooter className="flex  justify-end">

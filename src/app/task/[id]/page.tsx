@@ -53,10 +53,10 @@ export default async function TaskPage({ params }: ParamProps) {
     <div className="flex flex-col gap-8">
       <Card className="flex flex-col gap-1 mt-4">
         <CardHeader>
-          <CardTitle className="text-3xl font-fredoka font-medium">
+          <CardTitle className="text-2xl font-fredoka font-medium md:text-3xl line-clamp-1">
             Tarefa {task.name}
           </CardTitle>
-          <CardDescription className="text-lg">
+          <CardDescription className="text-base md:text-lg">
             {task.description}
           </CardDescription>
           <CardDescription className="text-base text-zinc-600">
@@ -65,7 +65,7 @@ export default async function TaskPage({ params }: ParamProps) {
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           <Progress value={Math.round((task.progress / task.target) * 100)} />
-          <p className="text-base">
+          <p className="text-sm sm:text-base">
             {task.progress} / {task.target}
           </p>
         </CardContent>

@@ -35,7 +35,9 @@ const TaskCard = ({
       <Card>
         <CardHeader>
           <Link href={`/task/${id}`}>
-            <CardTitle className="text-lg sm:text-xl">{name}</CardTitle>
+            <CardTitle className="text-xl font-fredoka font-medium line-clamp-1 md:text-2xl">
+              {name}
+            </CardTitle>
           </Link>
           {description && (
             <CardDescription className="text-sm sm:text-base">
