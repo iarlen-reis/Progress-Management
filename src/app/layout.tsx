@@ -1,8 +1,21 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Roboto, Fredoka } from 'next/font/google'
 import './globals.css'
+import { Toaster } from '@/components/ui/sonner'
+import Header from '@/components/Header'
+import { cn } from '@/lib/utils'
 
-const inter = Inter({ subsets: ['latin'] })
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-roboto',
+})
+
+const fredoka = Fredoka({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-fredoka',
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,8 +28,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-BR">
+      <body className={cn('font-roboto', roboto.variable, fredoka.variable)}>
+        <Header />
+        <main className="container pb-12">{children}</main>
+        <Toaster />
+      </body>
     </html>
   )
 }
