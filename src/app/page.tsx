@@ -1,6 +1,8 @@
 import { MenuTools } from '@/components/MenuTools'
 import TaskCard from '@/components/TaskCard'
 import { env } from '@/lib/env'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './api/auth/[...nextauth]/route'
 
 interface TaskProps {
   id: string
@@ -11,9 +13,14 @@ interface TaskProps {
 }
 
 export default async function Home() {
+  const session = await getServerSession(authOptions)
+
   const response = await fetch(`${env.API_URL}/task`, {
     next: {
       tags: ['tasks'],
+    },
+    headers: {
+      Authorization: `Bearer ${session?.user?.id}`,
     },
   })
 
