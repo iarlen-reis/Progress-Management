@@ -1,5 +1,7 @@
 'use server'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { env } from '@/lib/env'
+import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
@@ -14,6 +16,12 @@ interface TaskProps {
 }
 
 export const createTask = async (data: FormData) => {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    redirect('/login')
+  }
+
   const dataSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
@@ -41,6 +49,7 @@ export const createTask = async (data: FormData) => {
       progress,
       target,
       deadline,
+      userId: session.user.id,
     }),
   })
 
