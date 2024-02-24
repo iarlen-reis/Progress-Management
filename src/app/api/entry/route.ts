@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
+  const userId = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const bodySchema = z.object({
     name: z.string(),
     description: z.string(),
@@ -23,6 +29,10 @@ export async function POST(request: NextRequest) {
 
   if (!task) {
     return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+  }
+
+  if (task.userId !== userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const entry = await prisma.entry.create({

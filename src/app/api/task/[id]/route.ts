@@ -7,14 +7,21 @@ interface Params {
     id: string
   }
 }
+
 export async function GET(request: Request, { params }: Params) {
+  const userId = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const paramSchema = z.object({
     id: z.string(),
   })
 
   const { id } = paramSchema.parse(params)
 
-  const tasks = await prisma.task.findUnique({
+  const task = await prisma.task.findUnique({
     where: {
       id,
     },
@@ -23,10 +30,24 @@ export async function GET(request: Request, { params }: Params) {
     },
   })
 
-  return NextResponse.json(tasks)
+  if (!task) {
+    return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+  }
+
+  if (task.userId !== userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  return NextResponse.json(task)
 }
 
 export async function PUT(request: Request, { params }: Params) {
+  const userId = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const paramSchema = z.object({
     id: z.string(),
   })
@@ -41,11 +62,25 @@ export async function PUT(request: Request, { params }: Params) {
 
   const { id } = paramSchema.parse(params)
 
+  const task = await prisma.task.findUnique({
+    where: {
+      id,
+    },
+  })
+
+  if (!task) {
+    return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+  }
+
+  if (task.userId !== userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { name, description, deadline, progress, target } = bodySchema.parse(
     await request.json(),
   )
 
-  const task = await prisma.task.update({
+  await prisma.task.update({
     where: {
       id,
     },
@@ -58,17 +93,37 @@ export async function PUT(request: Request, { params }: Params) {
     },
   })
 
-  return NextResponse.json({ task })
+  return NextResponse.json(task)
 }
 
 export async function DELETE(request: Request, { params }: Params) {
+  const userId = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const paramSchema = z.object({
     id: z.string(),
   })
 
   const { id } = paramSchema.parse(params)
 
-  const task = await prisma.task.delete({
+  const task = await prisma.task.findUnique({
+    where: {
+      id,
+    },
+  })
+
+  if (!task) {
+    return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+  }
+
+  if (task.userId !== userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  await prisma.task.delete({
     where: {
       id,
     },
