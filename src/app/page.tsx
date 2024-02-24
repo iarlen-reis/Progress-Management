@@ -20,7 +20,7 @@ export default async function Home() {
       tags: ['tasks'],
     },
     headers: {
-      Authorization: `Bearer ${session?.user?.id}`,
+      Authorization: `Bearer ${session?.user.id}`,
     },
   })
 

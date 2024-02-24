@@ -1,3 +1,4 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import EntryCard from '@/components/EntryCard'
 import { MenuTools } from '@/components/MenuTools'
 import {
@@ -11,6 +12,7 @@ import {
 import { Progress } from '@/components/ui/progress'
 import { convertDate } from '@/lib/convertDate'
 import { env } from '@/lib/env'
+import { getServerSession } from 'next-auth'
 
 interface ParamProps {
   params: {
@@ -38,9 +40,14 @@ interface TaskProps {
 }
 
 export default async function TaskPage({ params }: ParamProps) {
+  const session = await getServerSession(authOptions)
+
   const response = await fetch(`${env.API_URL}/task/${params.id}`, {
     next: {
       tags: [`task-${params.id}`],
+    },
+    headers: {
+      Authorization: `Bearer ${session?.user.id}`,
     },
   })
 
