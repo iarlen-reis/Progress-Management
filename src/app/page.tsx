@@ -3,6 +3,15 @@ import TaskCard from '@/components/TaskCard'
 import { env } from '@/lib/env'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './api/auth/[...nextauth]/route'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationLink,
+  PaginationNext,
+} from '@/components/ui/pagination'
+import SearchInput from '@/components/SearchInput'
 
 interface TaskProps {
   id: string
@@ -12,19 +21,41 @@ interface TaskProps {
   target: number
 }
 
-export default async function Home() {
+interface TaskResponse {
+  page: number
+  maxPage: number
+  tasks: TaskProps[]
+  existsNextPage: boolean
+  existsPreviousPage: boolean
+}
+
+interface ParamProps {
+  searchParams: {
+    page: string
+    filter: string
+  }
+}
+
+export default async function Home({ searchParams }: ParamProps) {
   const session = await getServerSession(authOptions)
 
-  const response = await fetch(`${env.API_URL}/task`, {
-    next: {
-      tags: ['tasks'],
-    },
-    headers: {
-      Authorization: `Bearer ${session?.user.id}`,
-    },
-  })
+  const filter = searchParams.filter
+  const page = searchParams.page ?? 1
 
-  const tasks: TaskProps[] = await response.json()
+  const response = await fetch(
+    `${env.API_URL}/task?page=${page}${searchParams.filter ? `&filter=${filter}` : ''}`,
+    {
+      next: {
+        tags: ['tasks'],
+      },
+      headers: {
+        Authorization: `Bearer ${session?.user.id}`,
+      },
+    },
+  )
+
+  const tasks: TaskResponse = await response.json()
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1 mt-4">
@@ -38,9 +69,10 @@ export default async function Home() {
       <MenuTools.Root>
         <MenuTools.Link href="/task/create" text="Criar tarefa" />
       </MenuTools.Root>
+      <SearchInput />
       <div className="flex flex-col gap-4">
-        {tasks &&
-          tasks.map((task) => (
+        {tasks.tasks &&
+          tasks.tasks.map((task) => (
             <TaskCard
               key={task.id}
               id={task.id}
@@ -51,6 +83,33 @@ export default async function Home() {
             />
           ))}
       </div>
+      <Pagination className="flex items-center justify-end mt-4">
+        <PaginationContent>
+          {tasks.existsPreviousPage && (
+            <PaginationItem>
+              <PaginationPrevious
+                href={`/?page=${tasks.page - 1}${filter ? `&filter=${filter}` : ''}`}
+              />
+            </PaginationItem>
+          )}
+          {tasks.maxPage > 1 && (
+            <PaginationItem>
+              <PaginationLink
+                href={`/?page=${tasks.page}${filter ? `&filter=${filter}` : ''}`}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          )}
+          {tasks.existsNextPage && (
+            <PaginationItem>
+              <PaginationNext
+                href={`/?page=${tasks.page + 1}${filter ? `&filter=${filter}` : ''}`}
+              />
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </Pagination>
     </div>
   )
 }

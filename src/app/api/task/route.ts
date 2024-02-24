@@ -10,13 +10,70 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const tasks = await prisma.task.findMany({
+    const page = Number(request.nextUrl.searchParams.get('page')) ?? 1
+    const filter = request.nextUrl.searchParams.get('filter')
+
+    const PER_PAGE = 4
+
+    if (!filter) {
+      const totalTasks = await prisma.task.count({
+        where: {
+          userId: id,
+        },
+      })
+
+      const maxPage = Math.ceil(totalTasks / PER_PAGE)
+      const existsNextPage = page < maxPage
+      const existsPreviousPage = page > 1
+
+      const tasks = await prisma.task.findMany({
+        where: {
+          userId: id,
+        },
+        take: PER_PAGE,
+        skip: (page - 1) * PER_PAGE,
+      })
+
+      return NextResponse.json({
+        page,
+        maxPage,
+        tasks,
+        existsNextPage,
+        existsPreviousPage,
+      })
+    }
+
+    const totalTasks = await prisma.task.count({
       where: {
         userId: id,
+        name: {
+          contains: filter,
+          mode: 'insensitive',
+        },
       },
     })
 
-    return NextResponse.json(tasks)
+    const maxPage = Math.ceil(totalTasks / PER_PAGE)
+    const existsNextPage = page < maxPage
+    const existsPreviousPage = page > 1
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        userId: id,
+        name: {
+          contains: filter,
+          mode: 'insensitive',
+        },
+      },
+    })
+
+    return NextResponse.json({
+      page,
+      maxPage,
+      tasks,
+      existsNextPage,
+      existsPreviousPage,
+    })
   } catch (error) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
