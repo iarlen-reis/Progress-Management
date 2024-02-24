@@ -1,10 +1,14 @@
 'use server'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { env } from '@/lib/env'
+import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 export const createEntry = async (data: FormData) => {
+  const session = await getServerSession(authOptions)
+
   const dataSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
@@ -25,6 +29,7 @@ export const createEntry = async (data: FormData) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user.id}`,
     },
     body: JSON.stringify({
       name,

@@ -1,10 +1,14 @@
 'use server'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { env } from '@/lib/env'
+import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 export const updateTask = async (data: FormData) => {
+  const session = await getServerSession(authOptions)
+
   const dataSchema = z.object({
     id: z.string(),
     name: z.string(),
@@ -28,6 +32,7 @@ export const updateTask = async (data: FormData) => {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user.id}`,
     },
     body: JSON.stringify({
       name,

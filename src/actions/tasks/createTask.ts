@@ -18,10 +18,6 @@ interface TaskProps {
 export const createTask = async (data: FormData) => {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user) {
-    redirect('/login')
-  }
-
   const dataSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
@@ -42,6 +38,7 @@ export const createTask = async (data: FormData) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user.id}`,
     },
     body: JSON.stringify({
       name,
@@ -49,7 +46,6 @@ export const createTask = async (data: FormData) => {
       progress,
       target,
       deadline,
-      userId: session.user.id,
     }),
   })
 
