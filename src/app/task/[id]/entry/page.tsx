@@ -2,6 +2,7 @@ import { createEntry } from '@/actions/entry/createEntry'
 import ButtonForm from '@/components/ButtonForm'
 import FieldSet from '@/components/FieldSet'
 import IsRequired from '@/components/IsRequired'
+import { PageNavigation } from '@/components/PageNavigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -15,14 +16,11 @@ interface ParamProps {
 export default async function Entry({ params }: ParamProps) {
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-1 mt-4">
-        <h1 className="text-2xl font-fredoka font-medium md:text-3xl">
-          Criar entrada
-        </h1>
-        <p className="text-base md:text-lg">
-          Adicione uma entrada a sua tarefa
-        </p>
-      </div>
+      <PageNavigation.Root>
+        <PageNavigation.Link href={`/task/${params.id}`} text="Tarefa" />
+        <PageNavigation.Arrow />
+        <PageNavigation.Text text="Criar entrada" />
+      </PageNavigation.Root>
 
       <form className="flex flex-col gap-6" action={createEntry}>
         <input

@@ -6,6 +6,7 @@ import FieldSet from '@/components/FieldSet'
 import IsRequired from '@/components/IsRequired'
 import { env } from '@/lib/env'
 import ButtonForm from '@/components/ButtonForm'
+import { PageNavigation } from '@/components/PageNavigation'
 
 interface ParamProps {
   params: {
@@ -32,11 +33,11 @@ export default async function EditTaskPage({ params }: ParamProps) {
   const task: TaskProps = await response.json()
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col mt-4">
-        <h1 className="text-2xl font-fredoka font-medium md:text-3xl line-clamp-1">
-          Editar {task.name}
-        </h1>
-      </div>
+      <PageNavigation.Root>
+        <PageNavigation.Link href={`/task/${task.id}`} text={task.name} />
+        <PageNavigation.Arrow />
+        <PageNavigation.Text text={`Editar ${task.name}`} />
+      </PageNavigation.Root>
 
       <form className="flex flex-col gap-6" action={updateTask}>
         <input type="hidden" name="id" id="id" defaultValue={task.id} />

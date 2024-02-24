@@ -2,6 +2,7 @@ import { createTask } from '@/actions/tasks/createTask'
 import ButtonForm from '@/components/ButtonForm'
 import FieldSet from '@/components/FieldSet'
 import IsRequired from '@/components/IsRequired'
+import { PageNavigation } from '@/components/PageNavigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,12 +10,11 @@ import { Textarea } from '@/components/ui/textarea'
 export default async function CreateTaskPage() {
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col mt-4">
-        <h1 className="text-2xl font-fredoka font-medium md:text-3xl">
-          Criar tarefa
-        </h1>
-      </div>
-
+      <PageNavigation.Root>
+        <PageNavigation.Link href="/" text="Tarefas" />
+        <PageNavigation.Arrow />
+        <PageNavigation.Text text="Criar tarefa" />
+      </PageNavigation.Root>
       <form className="flex flex-col gap-6" action={createTask}>
         <FieldSet>
           <Label htmlFor="name">
