@@ -12,15 +12,25 @@ export const authOptions: AuthOptions = {
       clientSecret: env.GITHUB_SECRET,
     }),
   ],
+  secret: env.NEXTAUTH_SECRET,
   callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id
-      return Promise.resolve(session)
+    async session({ session, token }) {
+      session = {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub as string,
+        },
+      }
+
+      return session
     },
   },
-  secret: env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt',
   },
 }
 
