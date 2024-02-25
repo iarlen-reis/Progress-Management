@@ -10,7 +10,7 @@ const PageNavigationLink = ({ text, href }: PageNavigationLinkProps) => {
   return (
     <Link
       href={href}
-      className="text-base font-fredoka md:text-lg lg:text-xl hover:transition-colors hover:opacity-80"
+      className="text-base font-fredoka line-clamp-1 md:text-lg lg:text-xl hover:transition-colors hover:opacity-80"
     >
       {text}
     </Link>
