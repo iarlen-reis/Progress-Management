@@ -1,15 +1,13 @@
 'use client'
-import React, { ChangeEvent, useEffect } from 'react'
 import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Search } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useDebounce } from 'use-debounce'
+import { useRouter } from 'next/navigation'
+import React, { ChangeEvent, useEffect } from 'react'
 
 const SearchInput = () => {
   const router = useRouter()
   const [filter, setFilter] = React.useState('')
-  const [debouncedFilter] = useDebounce(filter, 2000)
+  const [debouncedFilter] = useDebounce(filter, 1000)
 
   const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
     setFilter(event.target.value)
@@ -25,7 +23,7 @@ const SearchInput = () => {
   }, [debouncedFilter])
 
   return (
-    <form className="flex items-center gap-2 max-w-[260px] md:max-w-[400px] w-full">
+    <form className="flex items-center gap-2 max-w-[400px] w-full">
       <Input
         type="search"
         placeholder="Pesquisar"
@@ -33,9 +31,6 @@ const SearchInput = () => {
         value={filter}
         onChange={handleFilter}
       />
-      <Button variant="outline" size="icon" className="w-[40px] py-6">
-        <Search className="size-3" />
-      </Button>
     </form>
   )
 }

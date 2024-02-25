@@ -2,6 +2,13 @@ import Link from 'next/link'
 import React from 'react'
 import LogoutButton from '../LogoutButton'
 import { getServerSession } from 'next-auth'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
+
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 const Header = async () => {
@@ -19,7 +26,20 @@ const Header = async () => {
         <ul>
           {session?.user && (
             <li>
-              <LogoutButton />
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Avatar>
+                    <AvatarImage src={session.user.image} />
+                    <AvatarFallback className="bg-slate-400 text-slate-900 uppercase">
+                      {session.user.name.charAt(0)}
+                      {session.user.name.charAt(1)}
+                    </AvatarFallback>
+                  </Avatar>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-fit">
+                  <LogoutButton />
+                </HoverCardContent>
+              </HoverCard>
             </li>
           )}
         </ul>
