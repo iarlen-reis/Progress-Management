@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/pagination'
 import SearchInput from '@/components/SearchInput'
 
+import Image from 'next/image'
+
 interface TaskProps {
   id: string
   name: string
@@ -70,9 +72,9 @@ export default async function Home({ searchParams }: ParamProps) {
         <MenuTools.Link href="/task/create" text="Criar tarefa" />
       </MenuTools.Root>
       <SearchInput />
-      <div className="flex flex-col gap-4">
-        {tasks.tasks &&
-          tasks.tasks.map((task) => (
+      {tasks.tasks && (
+        <div className="flex flex-col gap-4">
+          {tasks.tasks.map((task) => (
             <TaskCard
               key={task.id}
               id={task.id}
@@ -82,7 +84,39 @@ export default async function Home({ searchParams }: ParamProps) {
               target={task.target}
             />
           ))}
-      </div>
+        </div>
+      )}
+      {tasks.tasks.length === 0 && !filter && (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Image
+            src="/checklist-pana.png"
+            width={400}
+            height={400}
+            className="w-[300px] h-[300px] md:w-[400px] md:h-[400px]"
+            alt="Uma gato em cima de uma movel enquanto sua dona faz uma checklist"
+          />
+          <p className="text-lg font-fredoka md:text-xl">
+            Você não possui nenhuma tarefa.
+          </p>
+        </div>
+      )}
+      {tasks.tasks.length === 0 && filter && (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Image
+            src="/five-pana.png"
+            width={400}
+            height={400}
+            className="w-[300px] h-[300px] md:w-[400px] md:h-[400px]"
+            alt="Uma mulher confusa pensando"
+          />
+          <p className="text-lg font-fredoka md:text-xl text-center">
+            Nenhuma tarefa com <br />
+            <span className="font-medium text-red-400">
+              {filter}
+            </span> <br /> foi encontrada.
+          </p>
+        </div>
+      )}
       <Pagination className="flex items-center justify-end mt-4">
         <PaginationContent>
           {tasks.existsPreviousPage && (
