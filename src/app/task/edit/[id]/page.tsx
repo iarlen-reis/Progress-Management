@@ -7,6 +7,9 @@ import IsRequired from '@/components/IsRequired'
 import { env } from '@/lib/env'
 import ButtonForm from '@/components/ButtonForm'
 import { PageNavigation } from '@/components/PageNavigation'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth'
+import { format } from 'date-fns'
 
 interface ParamProps {
   params: {
@@ -24,13 +27,20 @@ interface TaskProps {
 }
 
 export default async function EditTaskPage({ params }: ParamProps) {
+  const session = await getServerSession(authOptions)
+
   const response = await fetch(`${env.API_URL}/task/${params.id}`, {
     next: {
       tags: [`task-${params.id}`],
     },
+    headers: {
+      Authorization: `Bearer ${session?.user.id}`,
+    },
   })
 
   const task: TaskProps = await response.json()
+
+  const formattedDate = format(new Date(task.deadline), 'yyyy-MM-dd')
   return (
     <div className="flex flex-col gap-8">
       <PageNavigation.Root>
@@ -63,10 +73,10 @@ export default async function EditTaskPage({ params }: ParamProps) {
             id="deadline"
             required
             type="date"
-            defaultValue={task.deadline.split('T')[0]}
+            defaultValue={formattedDate}
           />
         </FieldSet>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-4">
           <FieldSet>
             <Label htmlFor="progress">
               Progresso <IsRequired />
