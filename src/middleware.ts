@@ -15,6 +15,13 @@ export const middleware = async (request: NextRequest) => {
     }
   }
 
+  if (request.nextUrl.pathname.includes('/task')) {
+    if (!session) {
+      const url = new URL(`/login`, request.url)
+      return NextResponse.redirect(url)
+    }
+  }
+
   if (request.nextUrl.pathname.startsWith('/login')) {
     if (session) {
       const url = new URL('/', request.url)
@@ -26,5 +33,5 @@ export const middleware = async (request: NextRequest) => {
 }
 
 export const config = {
-  matcher: ['/:path', '/login'],
+  matcher: ['/:path', '/login', '/task/:path*'],
 }
