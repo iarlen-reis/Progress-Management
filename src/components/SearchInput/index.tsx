@@ -3,6 +3,7 @@ import { Input } from '../ui/input'
 import { useDebounce } from 'use-debounce'
 import { useRouter } from 'next/navigation'
 import React, { ChangeEvent, useEffect } from 'react'
+import { SearchIcon } from 'lucide-react'
 
 const SearchInput = () => {
   const router = useRouter()
@@ -19,11 +20,10 @@ const SearchInput = () => {
     if (!filter) {
       router.push(`/?page=1`)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedFilter])
 
   return (
-    <form className="flex items-center gap-2 max-w-[400px] w-full">
+    <form className="flex items-center gap-2 max-w-[400px] w-full relative">
       <Input
         type="search"
         placeholder="Pesquisar"
@@ -31,6 +31,7 @@ const SearchInput = () => {
         value={filter}
         onChange={handleFilter}
       />
+      <SearchIcon className="absolute right-2 text-slate-400" />
     </form>
   )
 }
