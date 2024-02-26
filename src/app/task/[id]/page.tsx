@@ -78,9 +78,7 @@ export default async function TaskPage({ params }: ParamProps) {
 
       <div className="flex flex-col gap-4">
         {task.entries &&
-          task.entries.map((entry) => (
-            <EntryCard {...entry} taskId={task.id} key={entry.id} />
-          ))}
+          task.entries.map((entry) => <EntryCard {...entry} key={entry.id} />)}
       </div>
     </div>
   )

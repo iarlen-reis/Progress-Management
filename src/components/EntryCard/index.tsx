@@ -14,7 +14,6 @@ import ButtonForm from '../ButtonForm'
 
 interface EntryCardProps {
   id: string
-  taskId: string
   name: string
   description: string
   increment: number
@@ -23,7 +22,6 @@ interface EntryCardProps {
 
 const EntryCard = ({
   id,
-  taskId,
   name,
   description,
   increment,
@@ -54,8 +52,6 @@ const EntryCard = ({
       <CardFooter className="flex  justify-end">
         <ButtonDelete.Root action={deleteEntry}>
           <ButtonDelete.Input name="id" defaultValue={id} />
-          <ButtonDelete.Input name="taskId" defaultValue={taskId} />
-
           <ButtonForm
             text="Excluir"
             textOnLoading="Excluindo..."

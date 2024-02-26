@@ -38,6 +38,5 @@ export const createEntry = async (data: FormData) => {
   })
 
   revalidateTag('tasks')
-  revalidateTag(`task-${taskId}`)
   redirect(`/task/${taskId}`)
 }

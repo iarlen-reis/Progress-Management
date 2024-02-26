@@ -6,12 +6,10 @@ import { z } from 'zod'
 export const deleteEntry = async (data: FormData) => {
   const dataSchema = z.object({
     id: z.string(),
-    taskId: z.string(),
   })
 
-  const { id, taskId } = dataSchema.parse({
+  const { id } = dataSchema.parse({
     id: data.get('id'),
-    taskId: data.get('taskId'),
   })
 
   await prisma.entry.delete({
@@ -21,5 +19,4 @@ export const deleteEntry = async (data: FormData) => {
   })
 
   revalidateTag('tasks')
-  revalidateTag(`task-${taskId}`)
 }
