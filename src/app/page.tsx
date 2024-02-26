@@ -33,6 +33,10 @@ export default async function Home({ searchParams }: ParamProps) {
   const totalTasks = await prisma.task.count({
     where: {
       userId: session?.user.id,
+      name: {
+        contains: filter,
+        mode: 'insensitive',
+      },
     },
   })
 
