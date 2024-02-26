@@ -33,27 +33,27 @@ const TaskCard = ({
   return (
     <li>
       <Card>
-        <CardHeader>
-          <Link href={`/task/${id}`}>
+        <Link href={`/task/${id}`} className="flex flex-col gap-2">
+          <CardHeader>
             <CardTitle className="text-xl font-fredoka font-medium line-clamp-1 md:text-2xl">
               {name}
             </CardTitle>
-          </Link>
-          {description && (
-            <CardDescription className="text-sm sm:text-base">
-              {description}
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          <Progress value={Math.round((progress / target) * 100)} />
-          <div className="flex justify-between">
-            <span className="text-sm sm:text-base">
-              {Math.round((progress / target) * 100)}%
-            </span>
-            <span className="text-sm sm:text-base">100%</span>
-          </div>
-        </CardContent>
+            {description && (
+              <CardDescription className="text-sm sm:text-base">
+                {description}
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            <Progress value={Math.round((progress / target) * 100)} />
+            <div className="flex justify-between">
+              <span className="text-sm sm:text-base">
+                {Math.round((progress / target) * 100)}%
+              </span>
+              <span className="text-sm sm:text-base">100%</span>
+            </div>
+          </CardContent>
+        </Link>
         <CardFooter className="flex justify-center gap-4 md:justify-end">
           <ButtonDelete.Root action={deleteTask}>
             <ButtonDelete.Input type="text" name="id" defaultValue={id} />
