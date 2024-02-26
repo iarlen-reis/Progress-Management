@@ -5,7 +5,7 @@ Progress Management é uma aplicação full-stack feita com nextJs 14. Ela é um
 
 
 ## Propósito
-Com a chegada do next 13.4, foi introduzido as funcionalidades de server actions e server components, as server actions foram "oficializadas" na versão 14 do nextJs.
+No nextJs 13.4 foram introduzidas as funcionalidades de server actions e server components, a server action foi "oficializada" na versão 14 do nextJs.
 
 O propósito da aplicação foi estudar essas novas funcionalidades, cerca de 95% da aplicação foi feita utilizando server components, onde toda estrutura da pagina/componente é construida e hidratada no servidor, sendo enviado uma quantidade baixíssima de javascript para o client (navegador).
 
@@ -48,5 +48,23 @@ GITHUB_ID E GITHUB_SECRET para autentição usando Oauth (next-auth):
 **Back-end:** NextJs 14, Tailwind, Shadcn/ui, Prisma, PostgreSQL, Next-Auth, Zod.
 
 
-## Observações
-Atualmente na versão NextJs 14.1.0, não é possível realizar testes unitários utilizando jest, existe um próvavel erro de conflito de arquivos.
+## Minhas considerações
+No meu ponto de vista o NextJs/Vercel ainda tem muito o que melhorar nos server components, existem algumas coisas que me encomodaram bastante durante o desenvolvimento:
+
+- As server actions só podem retornar `Promise<void>`, o que impede de fazer validações antes de efeituar qualquer comunicação com o banco de dados.
+
+- Não é possível utilizar as rotas da `api routes` em componentes ou páginas de servidor, por exemplo, se você tem uma api routes `/api/tasks` você não pode utiliza-la em uma página de servidor já que as rotas de api do NextJs não estão disponivel no momento do build. 
+
+- Se você chamar uma `api routes` dentro de uma página de servidor localmente na sua máquina, simplesmente funcionará.
+
+- Atualmente na versão NextJs 14.1.0, não é possível realizar testes unitários utilizando jest, existe um próvavel erro de conflito de arquivos.
+
+- Agora existe a possibilidade de revalidar os dados com os hooks `revalidatePath` e `revalidateTag`, acredito que não é a melhor forma para lidar com cache, mas é um bom começo, o `react-query` continua sendo a melhor opção para manipulação de cache.
+
+## Considerações finais
+
+O NextJs/Vercel parecem decididos á adotar o server side render como modelo de desenvolvimento, provavelmente muita coisa será alterada futuramente, principalmente em relação as server actions e api routes.
+
+Se permitirem a utilização de api routes em páginas e componentes de servidor será muito bom para manter tudo organizado, já que JSX e Acesso ao banco de dados no mesmo arquivo torna as coisas muito confusa.
+
+O desenvolvimento da aplicação foi bastante divertido, principalmente com as server actions, mas irei esperar um amadurecimento antes de usar em produção.
