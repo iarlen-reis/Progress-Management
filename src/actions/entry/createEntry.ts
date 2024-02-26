@@ -1,6 +1,6 @@
 'use server'
 import prisma from '@/lib/prisma'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
@@ -21,22 +21,36 @@ export const createEntry = async (data: FormData) => {
     date: data.get('date'),
   })
 
-  await prisma.task.findUnique({
+  const task = await prisma.task.findUnique({
     where: {
       id: taskId,
     },
   })
 
-  await prisma.entry.create({
-    data: {
-      name,
-      description,
-      increment,
-      taskId,
-      date,
-    },
-  })
+  if (task) {
+    await prisma.entry.create({
+      data: {
+        name,
+        description,
+        increment,
+        taskId,
+        date,
+      },
+    })
 
-  revalidateTag('tasks')
+    await prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        progress: {
+          increment,
+        },
+      },
+    })
+  }
+
+  revalidatePath('/', 'page')
+  revalidatePath(`/task/${taskId}`, 'page')
   redirect(`/task/${taskId}`)
 }
