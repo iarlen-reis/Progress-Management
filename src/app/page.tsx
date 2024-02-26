@@ -1,6 +1,5 @@
 import { MenuTools } from '@/components/MenuTools'
 import TaskCard from '@/components/TaskCard'
-import { env } from '@/lib/env'
 import { getServerSession } from 'next-auth'
 import {
   Pagination,
@@ -14,24 +13,25 @@ import SearchInput from '@/components/SearchInput'
 
 import Image from 'next/image'
 import { authOptions } from '@/utils/authOptions'
+import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-interface TaskProps {
-  id: string
-  name: string
-  description: string
-  progress: number
-  target: number
-}
+// interface TaskProps {
+//   id: string
+//   name: string
+//   description: string
+//   progress: number
+//   target: number
+// }
 
-interface TaskResponse {
-  page: number
-  maxPage: number
-  tasks: TaskProps[]
-  existsNextPage: boolean
-  existsPreviousPage: boolean
-}
+// interface TaskResponse {
+//   page: number
+//   maxPage: number
+//   tasks: TaskProps[]
+//   existsNextPage: boolean
+//   existsPreviousPage: boolean
+// }
 
 interface ParamProps {
   searchParams: {
@@ -44,22 +44,29 @@ export default async function Home({ searchParams }: ParamProps) {
   const session = await getServerSession(authOptions)
 
   const filter = searchParams.filter
-  const page = searchParams.page ?? 1
+  const page = Number(searchParams.page ?? 1)
 
-  const response = await fetch(
-    `${env.API_URL}/task?page=${page}${searchParams.filter ? `&filter=${filter}` : ''}`,
-    {
-      next: {
-        tags: ['tasks'],
-      },
-      cache: 'no-store',
-      headers: {
-        Authorization: `Bearer ${session?.user.id}`,
+  const totalTasks = await prisma.task.count({
+    where: {
+      userId: session?.user.id,
+    },
+  })
+
+  const maxPage = Math.ceil(totalTasks / 4)
+  const existsNextPage = page < maxPage
+  const existsPreviousPage = page > 1
+
+  const tasks = await prisma.task.findMany({
+    where: {
+      userId: session?.user.id,
+      name: {
+        contains: filter,
+        mode: 'insensitive',
       },
     },
-  )
-
-  const tasks: TaskResponse = await response.json()
+    take: 4,
+    skip: (Number(page) - 1) * 4,
+  })
 
   return (
     <div className="flex flex-col gap-8">
@@ -75,9 +82,9 @@ export default async function Home({ searchParams }: ParamProps) {
         <MenuTools.Link href="/task/create" text="Criar tarefa" />
       </MenuTools.Root>
       <SearchInput />
-      {tasks.tasks && (
+      {tasks && (
         <div className="flex flex-col gap-4">
-          {tasks.tasks.map((task) => (
+          {tasks.map((task) => (
             <TaskCard
               key={task.id}
               id={task.id}
@@ -89,7 +96,7 @@ export default async function Home({ searchParams }: ParamProps) {
           ))}
         </div>
       )}
-      {tasks.tasks.length === 0 && !filter && (
+      {tasks.length === 0 && !filter && (
         <div className="flex flex-col items-center justify-center gap-2">
           <Image
             src="/checklist-pana.png"
@@ -103,7 +110,7 @@ export default async function Home({ searchParams }: ParamProps) {
           </p>
         </div>
       )}
-      {tasks.tasks.length === 0 && filter && (
+      {tasks.length === 0 && filter && (
         <div className="flex flex-col items-center justify-center gap-2">
           <Image
             src="/five-pana.png"
@@ -122,26 +129,26 @@ export default async function Home({ searchParams }: ParamProps) {
       )}
       <Pagination className="flex items-center justify-end mt-4">
         <PaginationContent>
-          {tasks.existsPreviousPage && (
+          {existsPreviousPage && (
             <PaginationItem>
               <PaginationPrevious
-                href={`/?page=${tasks.page - 1}${filter ? `&filter=${filter}` : ''}`}
+                href={`/?page=${page - 1}${filter ? `&filter=${filter}` : ''}`}
               />
             </PaginationItem>
           )}
-          {tasks.maxPage > 1 && (
+          {maxPage > 1 && (
             <PaginationItem>
               <PaginationLink
-                href={`/?page=${tasks.page}${filter ? `&filter=${filter}` : ''}`}
+                href={`/?page=${page}${filter ? `&filter=${filter}` : ''}`}
               >
                 {page}
               </PaginationLink>
             </PaginationItem>
           )}
-          {tasks.existsNextPage && (
+          {existsNextPage && (
             <PaginationItem>
               <PaginationNext
-                href={`/?page=${tasks.page + 1}${filter ? `&filter=${filter}` : ''}`}
+                href={`/?page=${page + 1}${filter ? `&filter=${filter}` : ''}`}
               />
             </PaginationItem>
           )}
