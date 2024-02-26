@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import EntryCard from '@/components/EntryCard'
 import { MenuTools } from '@/components/MenuTools'
 import {
@@ -12,6 +11,7 @@ import {
 import { Progress } from '@/components/ui/progress'
 import { convertDate } from '@/lib/convertDate'
 import { env } from '@/lib/env'
+import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
 
 interface ParamProps {

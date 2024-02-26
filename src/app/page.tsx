@@ -2,7 +2,6 @@ import { MenuTools } from '@/components/MenuTools'
 import TaskCard from '@/components/TaskCard'
 import { env } from '@/lib/env'
 import { getServerSession } from 'next-auth'
-import { authOptions } from './api/auth/[...nextauth]/route'
 import {
   Pagination,
   PaginationContent,
@@ -14,6 +13,7 @@ import {
 import SearchInput from '@/components/SearchInput'
 
 import Image from 'next/image'
+import { authOptions } from '@/utils/authOptions'
 
 interface TaskProps {
   id: string

@@ -7,9 +7,9 @@ import IsRequired from '@/components/IsRequired'
 import { env } from '@/lib/env'
 import ButtonForm from '@/components/ButtonForm'
 import { PageNavigation } from '@/components/PageNavigation'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { format } from 'date-fns'
+import { authOptions } from '@/utils/authOptions'
 
 interface ParamProps {
   params: {
