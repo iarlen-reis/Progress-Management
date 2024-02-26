@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Progress Management
 
-First, run the development server:
+Progress Management é uma aplicação full-stack feita com nextJs 14. Ela é um gerenciador de progresso, onde o usuário pode definir uma tarefa e a medida que for concluido ir relatando o progresso.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Propósito
+Com a chegada do next 13.4, foi introduzido as funcionalidades de server actions e server components, as server actions foram "oficializadas" na versão 14 do nextJs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O propósito da aplicação foi estudar essas novas funcionalidades, cerca de 95% da aplicação foi feita utilizando server components, onde toda estrutura da pagina/componente é construida e hidratada no servidor, sendo enviado uma quantidade baixíssima de javascript para o client (navegador).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Funcionalidades
+- Autenticação com Github
+- Criar, Atualizar, Vizualizar e Deletar Task.
+- Criar e Deletar entrada da task.
+- Paginação (4 tasks por pagina).
+- Filtar task por nome.
+## Variáveis de Ambiente
 
-## Learn More
+Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu `
+.env
+`
 
-To learn more about Next.js, take a look at the following resources:
+Url do banco de postgreSQL:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`DATABASE_URL=` 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Secret para o nextJs (qualquer texto aleatorio):
 
-## Deploy on Vercel
+`NEXTAUTH_SECRET=`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+GITHUB_ID E GITHUB_SECRET para autentição usando Oauth (next-auth):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`GITHUB_ID=`
+
+`GITHUB_SECRET=`
+
+
+## Melhorias
+
+- Adicionar testes unitários 
+- Permitir compartilhar progresso de task com outras pessoas.
+
+
+
+## Stack utilizada
+
+**Back-end:** NextJs 14, Tailwind, Shadcn/ui, Prisma, PostgreSQL, Next-Auth, Zod.
+
+
+## Observações
+Atualmente na versão NextJs 14.1.0, não é possível realizar testes unitários utilizando jest, existe um próvavel erro de conflito de arquivos.
