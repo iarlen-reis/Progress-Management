@@ -26,7 +26,11 @@ export async function GET(request: Request, { params }: Params) {
       id,
     },
     include: {
-      entries: true,
+      entries: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
     },
   })
 
