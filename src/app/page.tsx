@@ -17,22 +17,6 @@ import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-// interface TaskProps {
-//   id: string
-//   name: string
-//   description: string
-//   progress: number
-//   target: number
-// }
-
-// interface TaskResponse {
-//   page: number
-//   maxPage: number
-//   tasks: TaskProps[]
-//   existsNextPage: boolean
-//   existsPreviousPage: boolean
-// }
-
 interface ParamProps {
   searchParams: {
     page: string

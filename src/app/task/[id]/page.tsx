@@ -10,9 +10,10 @@ import {
 } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { convertDate } from '@/lib/convertDate'
-import { env } from '@/lib/env'
+import prisma from '@/lib/prisma'
 import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
 
 interface ParamProps {
   params: {
@@ -20,38 +21,22 @@ interface ParamProps {
   }
 }
 
-interface EntryProps {
-  id: string
-  name: string
-  description: string
-  increment: number
-  date: string
-}
-
-interface TaskProps {
-  id: string
-  name: string
-  description: string
-  progress: number
-  target: number
-  deadline: string
-  createdAt: string
-  entries: EntryProps[]
-}
-
 export default async function TaskPage({ params }: ParamProps) {
   const session = await getServerSession(authOptions)
 
-  const response = await fetch(`${env.API_URL}/task/${params.id}`, {
-    next: {
-      tags: [`task-${params.id}`],
+  const task = await prisma.task.findUnique({
+    where: {
+      id: params.id,
+      userId: session?.user.id,
     },
-    headers: {
-      Authorization: `Bearer ${session?.user.id}`,
+    include: {
+      entries: true,
     },
   })
 
-  const task: TaskProps = await response.json()
+  if (!task) {
+    return redirect('/')
+  }
 
   const convertedDeadlineDate = convertDate(task.deadline)
   const convertedCreatedAtDate = convertDate(task.createdAt)

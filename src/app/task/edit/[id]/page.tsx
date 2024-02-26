@@ -4,12 +4,13 @@ import { updateTask } from '@/actions/tasks/updateTask'
 import { Textarea } from '@/components/ui/textarea'
 import FieldSet from '@/components/FieldSet'
 import IsRequired from '@/components/IsRequired'
-import { env } from '@/lib/env'
 import ButtonForm from '@/components/ButtonForm'
 import { PageNavigation } from '@/components/PageNavigation'
 import { getServerSession } from 'next-auth'
 import { format } from 'date-fns'
 import { authOptions } from '@/utils/authOptions'
+import prisma from '@/lib/prisma'
+import { redirect } from 'next/navigation'
 
 interface ParamProps {
   params: {
@@ -17,28 +18,19 @@ interface ParamProps {
   }
 }
 
-interface TaskProps {
-  id: string
-  name: string
-  description: string
-  progress: number
-  target: number
-  deadline: string
-}
-
 export default async function EditTaskPage({ params }: ParamProps) {
   const session = await getServerSession(authOptions)
 
-  const response = await fetch(`${env.API_URL}/task/${params.id}`, {
-    next: {
-      tags: [`task-${params.id}`],
-    },
-    headers: {
-      Authorization: `Bearer ${session?.user.id}`,
+  const task = await prisma.task.findUnique({
+    where: {
+      id: params.id,
+      userId: session?.user.id,
     },
   })
 
-  const task: TaskProps = await response.json()
+  if (!task) {
+    return redirect('/')
+  }
 
   const formattedDate = format(new Date(task.deadline), 'yyyy-MM-dd')
   return (
