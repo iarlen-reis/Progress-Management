@@ -9,13 +9,6 @@ import { z } from 'zod'
 export const createTask = async (data: FormData) => {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
-    return {
-      error: 'Unauthorized',
-      status: 401,
-    }
-  }
-
   const dataSchema = z.object({
     name: z.string(),
     description: z.string(),
@@ -32,17 +25,20 @@ export const createTask = async (data: FormData) => {
     deadline: data.get('deadline'),
   })
 
-  const task = await prisma.task.create({
-    data: {
-      name,
-      description,
-      progress,
-      target,
-      deadline,
-      userId: session?.user.id,
-    },
-  })
+  if (session?.user.id) {
+    const task = await prisma.task.create({
+      data: {
+        name,
+        description,
+        progress,
+        target,
+        deadline,
+        userId: session?.user.id,
+      },
+    })
+
+    redirect(`/task/${task.id}`)
+  }
 
   revalidateTag('tasks')
-  redirect(`/task/${task.id}`)
 }

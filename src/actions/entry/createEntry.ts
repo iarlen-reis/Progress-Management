@@ -1,14 +1,10 @@
 'use server'
 import prisma from '@/lib/prisma'
-import { authOptions } from '@/utils/authOptions'
-import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 export const createEntry = async (data: FormData) => {
-  const session = await getServerSession(authOptions)
-
   const dataSchema = z.object({
     name: z.string(),
     description: z.string(),
@@ -25,25 +21,11 @@ export const createEntry = async (data: FormData) => {
     date: data.get('date'),
   })
 
-  const task = await prisma.task.findUnique({
+  await prisma.task.findUnique({
     where: {
       id: taskId,
     },
   })
-
-  if (!task) {
-    return {
-      error: 'Task not found',
-      status: 404,
-    }
-  }
-
-  if (task.userId !== session?.user.id) {
-    return {
-      error: 'Unauthorized',
-      status: 401,
-    }
-  }
 
   await prisma.entry.create({
     data: {
