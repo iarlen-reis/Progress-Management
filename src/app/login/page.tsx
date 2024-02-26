@@ -1,9 +1,4 @@
-import ButtonForm from '@/components/ButtonForm'
-import FieldSet from '@/components/FieldSet'
-import IsRequired from '@/components/IsRequired'
 import LoginWithGithub from '@/components/LoginWithGithub'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 
 export default async function Login() {
   return (
@@ -19,7 +14,7 @@ export default async function Login() {
             Faça login para gerenciar seus progressos de forma fácil e efciente.
           </p>
         </div>
-        <form className="w-full space-y-5">
+        {/* <form className="w-full space-y-5">
           <FieldSet>
             <Label htmlFor="email">
               Email <IsRequired />
@@ -37,7 +32,7 @@ export default async function Login() {
             textOnLoading="Entrando..."
             className="w-full h-11"
           />
-        </form>
+        </form> */}
         <div className="flex items-center justify-center gap-2 w-full">
           <div className="w-1/4 h-[1px] bg-slate-300"></div>
           <p className="text-slate-500">ou</p>
