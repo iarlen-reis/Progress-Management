@@ -1,5 +1,5 @@
 'use server'
-import { env } from '@/lib/env'
+import prisma from '@/lib/prisma'
 import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
@@ -28,19 +28,37 @@ export const updateTask = async (data: FormData) => {
       deadline: data.get('deadline'),
     })
 
-  await fetch(`${env.API_URL}/task/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.user.id}`,
+  const task = await prisma.task.findUnique({
+    where: {
+      id,
     },
-    body: JSON.stringify({
+  })
+
+  if (!task) {
+    return {
+      error: 'Task not found',
+      status: 404,
+    }
+  }
+
+  if (!session) {
+    return {
+      error: 'Unauthorized',
+      status: 401,
+    }
+  }
+
+  await prisma.task.update({
+    where: {
+      id,
+    },
+    data: {
       name,
       description,
       progress,
       target,
       deadline,
-    }),
+    },
   })
 
   revalidateTag('tasks')

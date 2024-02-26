@@ -1,26 +1,24 @@
 'use server'
-import { env } from '@/lib/env'
+import prisma from '@/lib/prisma'
 import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
-interface TaskProps {
-  id: string
-  name: string
-  description: string
-  progress: number
-  target: number
-  deadline: Date
-}
-
 export const createTask = async (data: FormData) => {
   const session = await getServerSession(authOptions)
 
+  if (!session) {
+    return {
+      error: 'Unauthorized',
+      status: 401,
+    }
+  }
+
   const dataSchema = z.object({
     name: z.string(),
-    description: z.string().optional(),
+    description: z.string(),
     progress: z.number(),
     target: z.number(),
     deadline: z.string().transform((value) => new Date(value).toISOString()),
@@ -34,22 +32,16 @@ export const createTask = async (data: FormData) => {
     deadline: data.get('deadline'),
   })
 
-  const response = await fetch(`${env.API_URL}/task`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.user.id}`,
-    },
-    body: JSON.stringify({
+  const task = await prisma.task.create({
+    data: {
       name,
       description,
       progress,
       target,
       deadline,
-    }),
+      userId: session?.user.id,
+    },
   })
-
-  const task: TaskProps = await response.json()
 
   revalidateTag('tasks')
   redirect(`/task/${task.id}`)

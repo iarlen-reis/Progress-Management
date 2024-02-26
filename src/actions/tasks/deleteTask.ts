@@ -1,4 +1,5 @@
 'use server'
+import prisma from '@/lib/prisma'
 import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
@@ -15,10 +16,29 @@ export const deleteTask = async (data: FormData) => {
     id: data.get('id'),
   })
 
-  await fetch(`http://localhost:3000/api/task/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${session?.user.id}`,
+  const task = await prisma.task.findUnique({
+    where: {
+      id,
+    },
+  })
+
+  if (!task) {
+    return {
+      error: 'Task not found',
+      status: 404,
+    }
+  }
+
+  if (task.userId !== session?.user.id) {
+    return {
+      error: 'Unauthorized',
+      status: 401,
+    }
+  }
+
+  await prisma.task.delete({
+    where: {
+      id,
     },
   })
 

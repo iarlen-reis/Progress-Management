@@ -1,5 +1,5 @@
 'use server'
-import { env } from '@/lib/env'
+import prisma from '@/lib/prisma'
 import { authOptions } from '@/utils/authOptions'
 import { getServerSession } from 'next-auth'
 import { revalidateTag } from 'next/cache'
@@ -11,7 +11,7 @@ export const createEntry = async (data: FormData) => {
 
   const dataSchema = z.object({
     name: z.string(),
-    description: z.string().optional(),
+    description: z.string(),
     increment: z.number(),
     taskId: z.string(),
     date: z.string().transform((value) => new Date(value).toISOString()),
@@ -25,19 +25,34 @@ export const createEntry = async (data: FormData) => {
     date: data.get('date'),
   })
 
-  await fetch(`${env.API_URL}/entry`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.user.id}`,
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId,
     },
-    body: JSON.stringify({
+  })
+
+  if (!task) {
+    return {
+      error: 'Task not found',
+      status: 404,
+    }
+  }
+
+  if (task.userId !== session?.user.id) {
+    return {
+      error: 'Unauthorized',
+      status: 401,
+    }
+  }
+
+  await prisma.entry.create({
+    data: {
       name,
       description,
       increment,
       taskId,
       date,
-    }),
+    },
   })
 
   revalidateTag('tasks')
