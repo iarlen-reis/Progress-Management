@@ -15,6 +15,8 @@ import SearchInput from '@/components/SearchInput'
 import Image from 'next/image'
 import { authOptions } from '@/utils/authOptions'
 
+export const dynamic = 'force-dynamic'
+
 interface TaskProps {
   id: string
   name: string
@@ -50,6 +52,7 @@ export default async function Home({ searchParams }: ParamProps) {
       next: {
         tags: ['tasks'],
       },
+      cache: 'no-store',
       headers: {
         Authorization: `Bearer ${session?.user.id}`,
       },
