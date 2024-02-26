@@ -18,7 +18,7 @@ interface EntryCardProps {
   name: string
   description: string
   increment: number
-  date: string
+  date: Date
 }
 
 const EntryCard = ({
