@@ -1,3 +1,5 @@
+<img src="/public/git-hub/home.png" alt="image da pagina inicial da aplicação">
+<img src="/public/git-hub/task.png" alt="imagem de uma task da aplicação">
 
 # Progress Management
 
